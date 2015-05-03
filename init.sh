@@ -19,9 +19,9 @@ rsync -av --chmod=ugo=rwX --exclude-from 'exclude.txt' ./ docker@$(boot2docker i
 boot2docker ssh "docker stop nancy_instance;
 		docker rm nancy_instance;
 		docker rmi nancy_image;
-		cd /c/Projects/nancy-demo-hosting-docker;
+		cd /C/Projects/nancy-docker;
 		docker build -t nancy_image .;
-		docker run -d -p 5312:8080 -v /c/Projects/nancy-demo-hosting-docker:/src --name nancy_instance -w "/src" -t nancy_image;
+		docker run -d -p 5312:8080 -v /C/Projects/nancy-docker:/src --name nancy_instance -w "/src" -t nancy_image;
 		sudo kill \$(docker top \$(docker ps | grep nancy_instance | awk '{print \$1}') | grep mono | awk '{print \$1}');
 		docker exec \$(docker ps | grep nancy_instance | awk '{print \$1}') xbuild;
-		docker exec -d \$(docker ps | grep nancy_instance | awk '{print \$1}') mono src/bin/Nancy.Demo.Hosting.Docker.exe"
+		docker exec -d \$(docker ps | grep nancy_instance | awk '{print \$1}') mono src/bin/Nancy.Docker.exe"

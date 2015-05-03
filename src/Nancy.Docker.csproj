@@ -8,8 +8,8 @@
     <ProjectGuid>{0B3EA40E-F7D8-4E14-A30F-1536F41B62D1}</ProjectGuid>
     <OutputType>Exe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Nancy.Demo.Hosting.Docker</RootNamespace>
-    <AssemblyName>Nancy.Demo.Hosting.Docker</AssemblyName>
+    <RootNamespace>Nancy.Docker</RootNamespace>
+    <AssemblyName>Nancy.Docker</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
@@ -101,7 +101,6 @@
       <SubType>Designer</SubType>
     </None>
     <None Include="package.json" />
-    <None Include="test2.sh" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="gulpfile.js" />
