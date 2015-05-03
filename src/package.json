@@ -1,0 +1,25 @@
+﻿{
+    "name": "Nancy.Demo.Hosting.Docker",
+    "version": "1.0.0",
+    "description": "Trial with automatic compilation in docker container",
+    "dependencies": { },
+    "devDependencies": {
+        "browser-sync": "^2.0.0-rc4",
+        "del": "^1.1.1",
+        "gulp": "^3.8.10",
+        "yargs": "^1.3.3",
+        "nodemon": "latest"
+    },
+    "engines": {
+        "node": ">=0.10.0"
+    },
+    "scripts": {
+        "docker": "cd .. && bash sync.sh", 
+        "watch:docker": "nodemon -q -e cs,js,html,config --exec \"npm run docker\"",
+        "build": "gulp build"
+    },
+  "repository": {
+    "type": "svn",
+    "url": ""
+  }
+}
