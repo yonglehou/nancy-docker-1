@@ -25,9 +25,12 @@ docker run -d -h node -p 8500:8500 -p 8600:53/udp progrium/consul -server -boots
 
 docker run -d -v /var/run/docker.sock:/tmp/docker.sock -h 192.168.59.103 progrium/registrator consul://192.168.59.103:8500
 
-docker build -t="jbijlsma-nginx" github.com/jbijlsma/nginx
 
-docker run -d -p 80:80 jbijlsma-nginx
+docker stop nginx_instance
+docker rm nginx_instance
+docker rmi jbijlsma/nginx
+docker build -t jbijlsma/nginx github.com/jbijlsma/nginx
+docker run --name nginx_instance -d -p 80:80 jbijlsma/nginx
 
 frontend consul: http://dnw.services:8500/ui/#/dc1/services/consul
 

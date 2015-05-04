@@ -123,29 +123,35 @@ function getBoot2DockerIp(cb) {
 }
 
 function getUnixPath(windowsPath) {
-    return slash('/' + windowsPath.replace(':',''));
+    var unixPath = slash('/' + windowsPath.replace(':',''));
+    unixPath = unixPath.substring(0,1).toUpperCase() + unixPath.substring(1, unixPath.length); 	
+    return unixPath;
 }
 
 function getSyncCommands() {
     return [
         'eval `ssh-agent -s`',
         'ssh-add ' + home + '/.ssh/id_boot2docker',
-        'ssh-keyscan $(boot2docker ip) >> ~/.ssh/known_hosts',
+        'ssh-keyscan ' + docker_ip + ' >> ~/.ssh/known_hosts',
         'chmod 777 ' + home + '/.ssh/id_boot2docker',
         'rsync -av --chmod=ugo=rwX --exclude-from ' + cwd + '/exclude.txt' + ' ./ docker@' + docker_ip + ':' + cwd
     ];
 }
 
+function setNancyContainerIdVariable() {
+    return 'NANCY_CONTAINER_ID=\$(docker ps | grep nancy_instance | awk \'{print \$1}\')';
+}
+
 function getKillCommand() {
-    return 'sudo kill \$(docker top \$(docker ps | grep nancy_instance | awk \'{print \$1}\') | grep mono | awk \'{print \$1}\') 2>&1';
+    return 'sudo kill \$(docker top \$NANCY_CONTAINER_ID | grep mono | awk \'{print \$1}\')';
 }
 
 function getBuildCommand() {
-    return 'docker exec \$(docker ps | grep nancy_instance | awk \'{print \$1}\') xbuild';
+    return 'docker exec \$NANCY_CONTAINER_ID xbuild';
 }
 
 function getExecCommand() {
-    return 'docker exec -d \$(docker ps | grep nancy_instance | awk \'{print \$1}\') mono src/bin/Nancy.Demo.Hosting.Docker.exe';
+    return 'docker exec -d \$NANCY_CONTAINER_ID mono src/bin/Nancy.Docker.exe';
 }
 
 function start(cb) {
@@ -172,13 +178,18 @@ function start(cb) {
 
                                 execBoot2DockerSshCommands(
                                     [
+                                        'docker stop nginx_instance',
+                                        'docker rm nginx_instance',
+                                        'docker rmi jbijlsma/nginx',
+                                        'docker build -t jbijlsma/nginx github.com/jbijlsma/nginx',
+                                        'docker run --name nginx_instance -d -p 80:80 jbijlsma/nginx',
                                         'docker stop nancy_instance 2>&1',
                                         'docker rm nancy_instance 2>&1',
                                         'docker rmi nancy_image 2>&1',
                                         'cd ' + cwd,
                                         'docker build -t nancy_image .',
-                                        'docker run -d -p 8080:8080 -v ' + cwd + ':/src --name nancy_instance -w \"/src\" -t nancy_image',
-                                        'echo docker top \$(docker ps | grep nancy_instance | awk \'{print \$1}\') | grep mono | awk \'{print \$1}\'',
+                                        'docker run -d -p 5312:8080 -v ' + cwd + ':/src --name nancy_instance -w \"/src\" -t nancy_image',
+					                    setNancyContainerIdVariable(),
                                         getKillCommand(),
                                         getBuildCommand(),
                                         getExecCommand()
@@ -202,6 +213,7 @@ function reSync(cb) {
         function() {
             execBoot2DockerSshCommands(
             [
+		        setNancyContainerIdVariable(),
                 getKillCommand(),
                 getBuildCommand(),
                 getExecCommand()

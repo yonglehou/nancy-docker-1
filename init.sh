@@ -16,6 +16,12 @@ ssh-keyscan $DOCKER_IP >> ~/.ssh/known_hosts
 chmod 777 ~/.ssh/id_boot2docker
 rsync -av --chmod=ugo=rwX --exclude-from 'exclude.txt' ./ docker@$DOCKER_IP:$(pwd)
 
+boot2docker ssh "docker stop nginx_instance;
+		docker rm nginx_instance;
+		docker rmi jbijlsma/nginx;
+		docker build -t jbijlsma/nginx github.com/jbijlsma/nginx;
+		docker run --name nginx_instance -d -p 80:80 jbijlsma/nginx"
+
 boot2docker ssh "docker stop nancy_instance;
 		docker rm nancy_instance;
 		docker rmi nancy_image;
