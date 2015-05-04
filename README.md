@@ -10,34 +10,42 @@ Install
 Run
 
 - doubleclick Boot2Docker Start icon on your desktop
-- open git bash
+- Bash: $ sh.exe init.sh
 
-$ docker build -t github.com/jbijlsma/nancy-docker github.com/jbijlsma/nancy-docker
-$ docker run -d -p 45158:8080 github.com/jbijlsma/nancy-docker
+Call nancy service
 
-Browser (without nginx proxy)
+- Browser: http://$(boot2docker ip)
+- Bash: $ curl $(boot2docker ip):80
 
-open browser http://$(boot2docker ip):8080
+Manual resync
 
---------------------------------------------------------------------
+- Bash: $ sh.exe sync.sh
+
+or
+
+- Bash: $ cd src
+- Bash: $ npm run docker
+
+Node watching 
+
+- Bash: $ node watch.js
+
+or
+
+- Bash: $ cd src
+- Bash: $ npm run docker:watch
+
+
+Consul
 
 docker run -d -h node -p 8500:8500 -p 8600:53/udp progrium/consul -server -bootstrap -advertise 192.168.59.103 -log-level debug
-
 docker run -d -v /var/run/docker.sock:/tmp/docker.sock -h 192.168.59.103 progrium/registrator consul://192.168.59.103:8500
-
-
-docker stop nginx_instance
-docker rm nginx_instance
-docker rmi jbijlsma/nginx
-docker build -t jbijlsma/nginx github.com/jbijlsma/nginx
-docker run --name nginx_instance -d -p 80:80 jbijlsma/nginx
 
 frontend consul: http://dnw.services:8500/ui/#/dc1/services/consul
 
 --------------------------------------------------------------------
 
 $ docker run -d -p 80:80 -v /var/run/docker.sock:/tmp/docker.sock -t jwilder/nginx-proxy
-
 docker run -d -e VIRTUAL_HOST=foo.bar.com -p 8081:80 nginx
 
 --------------------------------------------------------------------
