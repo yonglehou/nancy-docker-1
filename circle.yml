@@ -3,6 +3,9 @@ machine:
   services:
     - docker
     
+test:
+  override:
+
 deployment:
   hub:
     branch: master
